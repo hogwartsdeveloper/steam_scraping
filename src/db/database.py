@@ -51,13 +51,38 @@ class DataBaseJob:
                 cursor.execute(
                     """
                         CREATE TABLE games(
-                            game_id SERIAL PRIMARY KEY,
+                            id SERIAL PRIMARY KEY,
                             name VARCHAR(50) NOT NULL,
                             genre_id INTEGER REFERENCES genres(id) ON DELETE CASCADE
                         );
                     """
                 )
-                print("[INFO] Table games created successful")
+                connection.commit()
+            print("[INFO] Table games created successful")
+        except Exception as _ex:
+            print("[ERROR] Table not created", _ex)
+        finally:
+            if connection:
+                connection.close()
+                print("[INFO] PostgreSQL connection closed")
+
+    def create_table_price(self):
+        connection = None
+        try:
+            connection = self.connect()
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """
+                        CREATE TABLE price(
+                            id SERIAL PRIMARY KEY,
+                            game_id INTEGER REFERENCES games(id) ON DELETE CASCADE,
+                            price_kzt MONEY,
+                            date TIMESTAMP
+                        );
+                    """
+                )
+                connection.commit()
+            print("[INFO] Table games created successful")
         except Exception as _ex:
             print("[ERROR] Table not created", _ex)
         finally:
