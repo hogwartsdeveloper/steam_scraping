@@ -18,18 +18,13 @@ class DataBaseJob:
                 database=self.database
             )
             print("[INFO] PostgreSQL connection successful")
+            return connection
         except Exception as _ex:
             print("[Error] Error while working with PostgreSQL", _ex)
 
-        yield self.connection
-
-        if connection:
-            connection.close()
-            print("[INFO] PostgreSQL connection closed")
-
     def create_table_genre(self):
         try:
-            with self.connection.cursor() as cursor:
+            with self.connect().cursor() as cursor:
                 cursor.execute(
                     """
                         CREATE TABLE genres(
