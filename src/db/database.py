@@ -7,6 +7,7 @@ class DataBaseJob:
         self.user = user
         self.password = password
         self.database = database
+        self.connection = None
 
     def connect(self):
         try:
@@ -20,8 +21,22 @@ class DataBaseJob:
         except Exception as _ex:
             print("[Error] Error while working with PostgreSQL", _ex)
 
-        yield connection
+        yield self.connection
 
         if connection:
             connection.close()
             print("[INFO] PostgreSQL connection closed")
+
+    def create_table_genre(self):
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.execute(
+                    """
+                        CREATE TABLE genres(
+                            genre_id SERIAL PRIMARY KEY,
+                            name VARCHAR(50) NOT NULL);
+                    """
+                )
+            print("[INFO] Table genres created successful")
+        except Exception as _ex:
+            print("[ERROR] Table not created", _ex)
