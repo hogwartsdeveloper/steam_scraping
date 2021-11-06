@@ -1,4 +1,5 @@
 import psycopg2
+import json
 
 
 class DataBaseJob:
@@ -29,8 +30,9 @@ class DataBaseJob:
                 cursor.execute(
                     """
                         CREATE TABLE genres(
-                            id SERIAL PRIMARY KEY,
-                            name VARCHAR(50) NOT NULL
+                            id serial PRIMARY KEY,
+                            name VARCHAR(50) NOT NULL,
+                            steam_link VARCHAR(255) NOT NULL
                         );
                     """
                 )
@@ -85,6 +87,33 @@ class DataBaseJob:
             print("[INFO] Table games created successful")
         except Exception as _ex:
             print("[ERROR] Table not created", _ex)
+        finally:
+            if connection:
+                connection.close()
+                print("[INFO] PostgreSQL connection closed")
+
+    def parse_genre_json(self):
+        connection = None
+        with open("src/scraping/result/genre.json") as file:
+            data = json.load(file)
+        try:
+            connection = self.connect()
+
+            for genre_data in data:
+                name = genre_data.get('Name')
+                link = genre_data.get('Link')
+
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        f"""
+                            INSERT INTO genres (name, steam_link) VALUES
+                                ('{name}', '{link}');
+                        """
+                    )
+                    connection.commit()
+                    print("[INFO] Table inserted successful")
+        except Exception as _ex:
+            print("[ERROR] Table not insert into", _ex)
         finally:
             if connection:
                 connection.close()
