@@ -1,0 +1,2 @@
+class SteamGameScraping:
+    pass
