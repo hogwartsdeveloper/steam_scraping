@@ -15,3 +15,27 @@ class SteamGenreScraping:
 
         with open("src/scraping/steam_store_main.html", "w") as file:
             file.write(response.text)
+
+    @staticmethod
+    def get_data():
+        with open("src/scraping/steam_store_main.html") as file:
+            src = file.read()
+
+        soup = BeautifulSoup(src, "lxml")
+
+        gutter_block = soup.find("div", class_="home_page_gutter")
+        search_by_genre_block = gutter_block.find_all("div", class_="home_page_gutter_block")[1]
+        genre_block = search_by_genre_block.find_all("a", class_="gutter_item")
+
+        genre_data = []
+        for genre in genre_block:
+            link = genre.get("href")
+            genre_link = link.replace("/?snr=1_4_4__125", "")
+            genre_name = genre.text.strip()
+
+            genre_data.append(
+                {
+                    "Name": genre_name,
+                    "Link": genre_link
+                }
+            )
