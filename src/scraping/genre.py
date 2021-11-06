@@ -1,4 +1,5 @@
 import requests
+import json
 from bs4 import BeautifulSoup
 
 
@@ -13,12 +14,12 @@ class SteamGenreScraping:
 
         response = requests.get(self.link, headers=header)
 
-        with open("src/scraping/steam_store_main.html", "w") as file:
+        with open("src/scraping/html/steam_store_main.html", "w") as file:
             file.write(response.text)
 
     @staticmethod
     def get_data():
-        with open("src/scraping/steam_store_main.html") as file:
+        with open("src/scraping/html/steam_store_main.html") as file:
             src = file.read()
 
         soup = BeautifulSoup(src, "lxml")
@@ -39,3 +40,11 @@ class SteamGenreScraping:
                     "Link": genre_link
                 }
             )
+
+        return genre_data
+
+    def create_json(self):
+        genre_dict = self.get_data()
+
+        with open("src/scraping/result/genre.json", "w") as file:
+            json.dump(genre_dict, file, indent=4, ensure_ascii=False)
