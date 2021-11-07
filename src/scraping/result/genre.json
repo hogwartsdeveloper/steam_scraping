@@ -1,0 +1,50 @@
+[
+    {
+        "Name": "Free to Play",
+        "Link": "https://store.steampowered.com/genre/Free%20to%20Play"
+    },
+    {
+        "Name": "Early Access",
+        "Link": "https://store.steampowered.com/genre/Early%20Access"
+    },
+    {
+        "Name": "Action",
+        "Link": "https://store.steampowered.com/tags/en/Action"
+    },
+    {
+        "Name": "Adventure",
+        "Link": "https://store.steampowered.com/tags/en/Adventure"
+    },
+    {
+        "Name": "Casual",
+        "Link": "https://store.steampowered.com/tags/en/Casual"
+    },
+    {
+        "Name": "Indie",
+        "Link": "https://store.steampowered.com/tags/en/Indie"
+    },
+    {
+        "Name": "Massively Multiplayer",
+        "Link": "https://store.steampowered.com/tags/en/Massively%20Multiplayer"
+    },
+    {
+        "Name": "Racing",
+        "Link": "https://store.steampowered.com/tags/en/Racing"
+    },
+    {
+        "Name": "RPG",
+        "Link": "https://store.steampowered.com/tags/en/RPG"
+    },
+    {
+        "Name": "Simulation",
+        "Link": "https://store.steampowered.com/tags/en/Simulation"
+    },
+    {
+        "Name": "Sports",
+        "Link": "https://store.steampowered.com/tags/en/Sports"
+    },
+    {
+        "Name": "Strategy",
+        "Link": "https://store.steampowered.com/tags/en/Strategy"
+    }
+]
