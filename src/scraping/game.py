@@ -31,13 +31,6 @@ class SteamGameScraping:
 
             await asyncio.gather(*tasks)
 
-    def get_page_count(self):
-        self.connect()
-        with open(f"src/scraping/html/steam_{self.genre}_{0}.json") as file:
-            data = json.load(file)
-        count = math.ceil(data['total_count'] / 15)
-        return count
-
     async def get_data(self, session, page, page_count):
         header = {
             "user-agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:94.0) Gecko/20100101 Firefox/94.0"
