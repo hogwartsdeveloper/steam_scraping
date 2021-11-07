@@ -20,13 +20,6 @@ class SteamGameScraping:
         with open(f"src/scraping/html/steam_{self.genre}_{page}.json", "w") as file:
             json.dump(response.json(), file, indent=4, ensure_ascii=False)
 
-    def get_page_count(self):
-        self.connect(0)
-        with open(f"src/scraping/html/steam_{self.genre}_{0}.json") as file:
-            data = json.load(file)
-        count = math.ceil(data['total_count'] / 15)
-        return count
-
     def get_data(self, page):
         with open(f"src/scraping/html/steam_{self.genre}_{page}.json") as file:
             data = json.load(file)
