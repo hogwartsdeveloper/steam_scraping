@@ -41,6 +41,7 @@ class SteamGameScraping:
             if response.status == 200:
                 response_json = await response.json(content_type=False)
             else:
+                response_json = None
                 print(f"[ERROR] Wrong {response.status}")
             html = response_json['results_html']
 
