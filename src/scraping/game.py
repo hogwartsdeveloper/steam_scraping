@@ -80,5 +80,5 @@ class SteamGameScraping:
     def parse(self):
         asyncio.run(self.connect())
 
-        with open(f"src/scraping/result/{self.genre}/steam_game.json", "w") as file:
+        with open(f"src/scraping/result/steam_game{self.genre}.json", "w") as file:
             json.dump(self.games_data, file, indent=4, ensure_ascii=False)
