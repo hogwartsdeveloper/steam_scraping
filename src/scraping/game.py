@@ -28,8 +28,6 @@ class SteamGameScraping:
         return count
 
     def get_data(self, page):
-        global game_old_price, game_new_price
-
         with open(f"src/scraping/html/steam_{self.genre}_{page}.json") as file:
             data = json.load(file)
         html = data['results_html']
@@ -44,19 +42,23 @@ class SteamGameScraping:
                 game_name = "No name game"
                 print("[Error]", _ex)
 
+            game_price = game.find('div', class_='discount_prices')
+
             try:
-                game_price = game.find('div', class_='discount_prices').text.strip().replace(' ', '')
-                if game_price.count("₸") == 2:
-                    l_index = game_price.find("₸")
-                    r_index = game_price.rfind("₸")
-                    game_new_price = game_price[l_index:r_index].replace('₸', '')
-                    game_old_price = game_price[:l_index]
-                else:
-                    game_new_price = 0
-                    game_old_price = game_price.replace('₸', '')
-            except Exception as _ex:
-                game_price = "No game price"
-                print("[Error]", _ex)
+                game_new_price = game_price.find('div', "discount_final_price").text.replace('₸', '').replace(' ', '')
+                game_new_price = int(game_new_price)
+            except:
+                game_new_price = 0
+
+            try:
+                game_old_price = game_price.find('div', "discount_original_price").text.replace('₸', '').replace(' ', '')
+                game_old_price = int(game_old_price)
+            except:
+                game_old_price = 0
+
+            if game_old_price == 0:
+                game_old_price = game_new_price
+                game_new_price = 0
 
             games_data.append(
                 {
@@ -66,14 +68,8 @@ class SteamGameScraping:
                 }
             )
 
-        with open(f"src/scraping/result/steam_game_{self.genre}_{page}.json", "w") as file:
+        with open(f"src/scraping/result/{self.genre}/steam_game_{page}.json", "w") as file:
             json.dump(games_data, file, indent=4, ensure_ascii=False)
-
-        #     print(game_name)
-        #     print(game_old_price)
-        #     print(game_new_price)
-        #     print("#" * 19)
-        # print(len(games_data))
 
     def parse(self):
         page_count = self.get_page_count()
