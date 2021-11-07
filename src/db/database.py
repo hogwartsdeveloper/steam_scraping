@@ -118,3 +118,15 @@ class DataBaseJob:
             if connection:
                 connection.close()
                 print("[INFO] PostgreSQL connection closed")
+
+    def get_genre(self):
+        connection = self.connect()
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """SELECT name FROM genres;"""
+                )
+                genres = cursor.fetchall()
+            return genres
+        except Exception as _ex:
+            print("[ERROR] Table not get genre", _ex)
