@@ -54,7 +54,7 @@ class DataBaseJob:
                     """
                         CREATE TABLE games(
                             id SERIAL PRIMARY KEY,
-                            name VARCHAR(50) NOT NULL,
+                            name VARCHAR(255) NOT NULL,
                             genre_id INTEGER REFERENCES genres(id) ON DELETE CASCADE
                         );
                     """
@@ -119,6 +119,31 @@ class DataBaseJob:
                 connection.close()
                 print("[INFO] PostgreSQL connection closed")
 
+    def parse_game_json(self, genre):
+        connection = self.connect()
+        with open(f"src/scraping/result/steam_game{genre}.json") as file:
+            data = json.load(file)
+
+        try:
+            for game_data in data:
+                name = game_data.get('game_name')
+
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        f"""
+                            INSERT INTO games (name, genre_id) VALUES
+                                ('{name}', (SELECT id FROM genres WHERE name = '{genre}'));
+                        """
+                    )
+                    connection.commit()
+                    print("[INFO] Game inserted in table")
+        except Exception as _ex:
+            print("[ERROR] Table not insert into", _ex)
+        finally:
+            if connection:
+                connection.close()
+                print("[INFO] PostgreSQL connection closed")
+
     def get_genre(self):
         connection = self.connect()
         try:
@@ -130,3 +155,7 @@ class DataBaseJob:
             return genres
         except Exception as _ex:
             print("[ERROR] Table not get genre", _ex)
+        finally:
+            if connection:
+                connection.close()
+                print("[INFO] PostgreSQL connection closed")
