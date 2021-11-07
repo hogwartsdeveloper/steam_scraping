@@ -79,12 +79,13 @@ class DataBaseJob:
                             id SERIAL PRIMARY KEY,
                             game_id INTEGER REFERENCES games(id) ON DELETE CASCADE,
                             price_kzt MONEY,
+                            price_sale_kzt MONEY,
                             date TIMESTAMP
                         );
                     """
                 )
                 connection.commit()
-            print("[INFO] Table games created successful")
+            print("[INFO] Table price created successful")
         except Exception as _ex:
             print("[ERROR] Table not created", _ex)
         finally:
@@ -133,6 +134,36 @@ class DataBaseJob:
                         f"""
                             INSERT INTO games (name, genre_id) VALUES
                                 ('{name}', (SELECT id FROM genres WHERE name = '{genre}'));
+                        """
+                    )
+                    connection.commit()
+                    print("[INFO] Game inserted in table")
+        except Exception as _ex:
+            print("[ERROR] Table not insert into", _ex)
+        finally:
+            if connection:
+                connection.close()
+                print("[INFO] PostgreSQL connection closed")
+
+    def parse_price_json(self, genre):
+        connection = self.connect()
+        with open(f"src/scraping/result/steam_game{genre}.json") as file:
+            data = json.load(file)
+
+        try:
+            for game_data in data:
+                name = game_data.get('game_name')
+                price = game_data.get('game_old_price')
+                price_sale = game_data.get('game_new_price')
+
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        f"""
+                            INSERT INTO price (game_id, price_kzt, price_sale_kzt, date) VALUES
+                                ((SELECT id FROM games WHERE name = '{name}' LIMIT 1), 
+                                {price}, 
+                                {price_sale}, 
+                                (SELECT NOW()::timestamp));
                         """
                     )
                     connection.commit()
