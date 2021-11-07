@@ -38,7 +38,10 @@ class SteamGameScraping:
 
         link = f"{self.link}/?query=&start={15 * page}&count=15&cc=KZ&l=russian&v=4&tag={self.genre}"
         async with session.get(url=link, headers=header) as response:
-            response_json = await response.json()
+            if response.status == 200:
+                response_json = await response.json(content_type=False)
+            else:
+                print(f"[ERROR] Wrong {response.status}")
             html = response_json['results_html']
 
             soup = BeautifulSoup(html, "lxml")
@@ -46,6 +49,8 @@ class SteamGameScraping:
             for game in game_cards:
                 try:
                     game_name = game.find('div', class_="tab_item_name").text.strip()
+                    if "'" in game_name:
+                        game_name = game_name.replace("'", "")
                 except Exception as _ex:
                     game_name = "No name game"
                     print("[Error]", _ex)
